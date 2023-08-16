@@ -1,51 +1,16 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes" ?>
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
-    <title>Projects | Rok&#39;s Projects</title>
-    <link>https://rokuc.github.io/project/</link>
-      <atom:link href="https://rokuc.github.io/project/index.xml" rel="self" type="application/rss+xml" />
-    <description>Projects</description>
-    <generator>Wowchemy (https://wowchemy.com)</generator><language>en-us</language><lastBuildDate>Tue, 15 Mar 2022 00:00:00 +0000</lastBuildDate>
+    <title>Deep Engineering | Rok&#39;s Projects</title>
+    <link>https://rokuc.github.io/tag/deep-engineering/</link>
+      <atom:link href="https://rokuc.github.io/tag/deep-engineering/index.xml" rel="self" type="application/rss+xml" />
+    <description>Deep Engineering</description>
+    <generator>Wowchemy (https://wowchemy.com)</generator><language>en-us</language><lastBuildDate>Wed, 27 Apr 2016 00:00:00 +0000</lastBuildDate>
     <image>
       <url>https://rokuc.github.io/media/icon_hu0b7a4cb9992c9ac0e91bd28ffd38dd00_9727_512x512_fill_lanczos_center_3.png</url>
-      <title>Projects</title>
-      <link>https://rokuc.github.io/project/</link>
+      <title>Deep Engineering</title>
+      <link>https://rokuc.github.io/tag/deep-engineering/</link>
     </image>
-    
-    <item>
-      <title>An autonomous web crawler</title>
-      <link>https://rokuc.github.io/project/e-store-crawler/</link>
-      <pubDate>Tue, 15 Mar 2022 00:00:00 +0000</pubDate>
-      <guid>https://rokuc.github.io/project/e-store-crawler/</guid>
-      <description>&lt;h2 id=&#34;project-background&#34;&gt;Project Background&lt;/h2&gt;
-&lt;p&gt;Our team developed a Dashboard for multiple stakeholders. While the users were happy with the dashboard, manual pipelines were time-consuming. To enhance efficiency, our team decided to create an automated crawler to directly populate a database with the same data previously stored as CSV files on sharepoint.&lt;/p&gt;
-&lt;p&gt;
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-&lt;figure  &gt;
-  &lt;div class=&#34;d-flex justify-content-center&#34;&gt;
-    &lt;div class=&#34;w-100&#34; &gt;&lt;img src=&#34;./Schema.png&#34; alt=&#34;png&#34; loading=&#34;lazy&#34; data-zoomable /&gt;&lt;/div&gt;
-  &lt;/div&gt;&lt;/figure&gt;
-&lt;/p&gt;
-&lt;h2 id=&#34;project-outcome&#34;&gt;Project Outcome&lt;/h2&gt;
-&lt;p&gt;Upon recognizing the primary challenge, we swiftly developed and automated a crawler. We set it to run daily through the Windows Task Scheduler. However, despite preparations, the anticipated data delivery didn&amp;rsquo;t materialize as expected. This setback left stakeholders eagerly awaiting crucial insights, highlighting the pressing need for a solution.&lt;/p&gt;
-&lt;p&gt;We successfully addressed this issue using a try-except loop. After a few hours of dedicated effort, the crawler was reinstated and resumed its consistent delivery of insights on a daily basis. Subsequently, our focus shifted to table normalization and seamless integration into our database.&lt;/p&gt;
-&lt;p&gt;The crawler has since operated harmoniously within our task scheduler, undergoing occasional adjustments to ensure its continued optimal performance.&lt;/p&gt;
-</description>
-    </item>
     
     <item>
       <title>Crawling the web for data</title>
