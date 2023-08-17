@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Data Analysis | Rok&#39;s Projects</title>
+    <link>https://rokuc.github.io/tag/data-analysis/</link>
+      <atom:link href="https://rokuc.github.io/tag/data-analysis/index.xml" rel="self" type="application/rss+xml" />
+    <description>Data Analysis</description>
+    <generator>Wowchemy (https://wowchemy.com)</generator><language>en-us</language><lastBuildDate>Wed, 21 Dec 2022 00:00:00 +0000</lastBuildDate>
+    <image>
+      <url>https://rokuc.github.io/media/icon_hu0b7a4cb9992c9ac0e91bd28ffd38dd00_9727_512x512_fill_lanczos_center_3.png</url>
+      <title>Data Analysis</title>
+      <link>https://rokuc.github.io/tag/data-analysis/</link>
+    </image>
+    
+    <item>
+      <title>Customer Lifetime Value - Analysis - Part 1</title>
+      <link>https://rokuc.github.io/project/customer-lifetime-value/</link>
+      <pubDate>Wed, 21 Dec 2022 00:00:00 +0000</pubDate>
+      <guid>https://rokuc.github.io/project/customer-lifetime-value/</guid>
+      <description>&lt;h2 id=&#34;project-overview&#34;&gt;Project overview&lt;/h2&gt;
+</description>
+    </item>
+    
+  </channel>
+</rss>
