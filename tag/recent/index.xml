@@ -1,15 +1,15 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes" ?>
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
-    <title>Rok&#39;s Projects</title>
-    <link>https://rokuc.github.io/</link>
-      <atom:link href="https://rokuc.github.io/index.xml" rel="self" type="application/rss+xml" />
-    <description>Rok&#39;s Projects</description>
-    <generator>Wowchemy (https://wowchemy.com)</generator><language>en-us</language><lastBuildDate>Wed, 16 Aug 2023 00:00:00 +0000</lastBuildDate>
+    <title>Recent | Rok&#39;s Projects</title>
+    <link>https://rokuc.github.io/tag/recent/</link>
+      <atom:link href="https://rokuc.github.io/tag/recent/index.xml" rel="self" type="application/rss+xml" />
+    <description>Recent</description>
+    <generator>Wowchemy (https://wowchemy.com)</generator><language>en-us</language><lastBuildDate>Thu, 22 Dec 2022 00:00:00 +0000</lastBuildDate>
     <image>
       <url>https://rokuc.github.io/media/icon_hub6cbf2e3867c55f0faea7610ce2a8cb5_10290_512x512_fill_lanczos_center_3.png</url>
-      <title>Rok&#39;s Projects</title>
-      <link>https://rokuc.github.io/</link>
+      <title>Recent</title>
+      <link>https://rokuc.github.io/tag/recent/</link>
     </image>
     
     <item>
@@ -104,14 +104,6 @@
 &lt;li&gt;Getting Crawler Status Updates: Knowing when the crawler ran or crashed was tricky. We nailed it by setting up automatic emails reporting on the latest date available in our dataset.&lt;/li&gt;
 &lt;/ul&gt;
 </description>
-    </item>
-    
-    <item>
-      <title></title>
-      <link>https://rokuc.github.io/admin/config.yml</link>
-      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
-      <guid>https://rokuc.github.io/admin/config.yml</guid>
-      <description></description>
     </item>
     
   </channel>
