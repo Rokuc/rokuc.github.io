@@ -5,7 +5,7 @@
     <link>https://rokuc.github.io/project/</link>
       <atom:link href="https://rokuc.github.io/project/index.xml" rel="self" type="application/rss+xml" />
     <description>Projects</description>
-    <generator>Wowchemy (https://wowchemy.com)</generator><language>en-us</language><lastBuildDate>Wed, 21 Dec 2022 00:00:00 +0000</lastBuildDate>
+    <generator>Wowchemy (https://wowchemy.com)</generator><language>en-us</language><lastBuildDate>Thu, 22 Dec 2022 00:00:00 +0000</lastBuildDate>
     <image>
       <url>https://rokuc.github.io/media/icon_hu0b7a4cb9992c9ac0e91bd28ffd38dd00_9727_512x512_fill_lanczos_center_3.png</url>
       <title>Projects</title>
@@ -13,10 +13,19 @@
     </image>
     
     <item>
+      <title>Customer Lifetime Value - Dashboarding - Part 2</title>
+      <link>https://rokuc.github.io/project/customer-lifetime-value-dashboard/</link>
+      <pubDate>Thu, 22 Dec 2022 00:00:00 +0000</pubDate>
+      <guid>https://rokuc.github.io/project/customer-lifetime-value-dashboard/</guid>
+      <description>&lt;h2 id=&#34;project-overview&#34;&gt;Project overview&lt;/h2&gt;
+</description>
+    </item>
+    
+    <item>
       <title>Customer Lifetime Value - Analysis - Part 1</title>
-      <link>https://rokuc.github.io/project/customer-lifetime-value/</link>
+      <link>https://rokuc.github.io/project/customer-lifetime-value-analysis/</link>
       <pubDate>Wed, 21 Dec 2022 00:00:00 +0000</pubDate>
-      <guid>https://rokuc.github.io/project/customer-lifetime-value/</guid>
+      <guid>https://rokuc.github.io/project/customer-lifetime-value-analysis/</guid>
       <description>&lt;h2 id=&#34;project-overview&#34;&gt;Project overview&lt;/h2&gt;
 &lt;p&gt;With new products launching and a growing focus on boosting our company&amp;rsquo;s ROI, our team took on the challenge of determining our companies customer lifetime value (CLV). We brainstormed ways to calculate CLV and settled on two approaches. Both approaches used RFM segmented data.&lt;/p&gt;
 &lt;p&gt;RFM stands for:&lt;/p&gt;
@@ -26,9 +35,12 @@
 &lt;li&gt;Monetary: Average spending over their entire time with us.&lt;/li&gt;
 &lt;/ul&gt;
 &lt;h2 id=&#34;the-two-approaches&#34;&gt;The two approaches&lt;/h2&gt;
-&lt;p&gt;We decided to go with an approach inspired by a research paper from 2005 titled &amp;ldquo;Counting Your Customers the Easy Way: An Alternative to the Pareto/NBD Model&amp;rdquo; by Fader et al. Thankfully, a Python implementation was already available, providing us with better and richer insights then our second method.&lt;/p&gt;
+&lt;p&gt;We decided to go with an approach inspired by a research paper from 2005 titled &amp;ldquo;Counting Your Customers the Easy Way: An Alternative to the Pareto/NBD Model&amp;rdquo; by Fader et al. A Python implementation was already available, providing us with better and richer insights then our second method.&lt;/p&gt;
 &lt;p&gt;The second method involved assessing how likely customers were to spend and predicting their future expenses. By multiplying these values, we got the customer&amp;rsquo;s value.&lt;/p&gt;
-&lt;p&gt;&amp;hellip;&lt;/p&gt;
+&lt;h2 id=&#34;project-output&#34;&gt;Project output&lt;/h2&gt;
+&lt;p&gt;The approach employed by Fader et al. considers only two variables: Recency and Frequency. Based on these values, we can intuitive calculate the customer value.&lt;/p&gt;
+&lt;p&gt;The model yields the repeat purchase frequency and the probability of observing the given number of purchases. The customer value is subsequently calculated by taking the product of the two together and further multiplying it by the individual&amp;rsquo;s spending habit.&lt;/p&gt;
+&lt;p&gt;Final deliverable was a dashboard which could be used for audience activation. This will be discussed in &lt;a href=&#34;https://rokuc.github.io/project/customer-lifetime-value-dashboard/&#34;&gt;part 2&lt;/a&gt; of this article.&lt;/p&gt;
 </description>
     </item>
     
