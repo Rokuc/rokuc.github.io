@@ -1,0 +1,31 @@
+import numpy as np
+import matplotlib.pyplot as plt
+from scipy.stats import beta
+#
+# Set the shape paremeters
+#
+a, b = 1, 1
+c, d = 70, 30
+e, f = 7, 3
+#
+# Generate the value between
+#
+x = np.linspace(beta.ppf(0.01, a, b),beta.ppf(0.99, a, b), 1000)
+x1 = np.linspace(beta.ppf(0.01, c, d),beta.ppf(0.99, c, d), 1000)
+x2 = np.linspace(beta.ppf(0.01, e, f),beta.ppf(0.99, e, f), 1000)
+#
+# Plot the beta distribution
+#
+plt.figure(figsize=(7,7))
+plt.xlim(0.0, 1)
+plt.text(0.65, 8, 'Beta (70,30)', fontsize = 10, color = 'b')
+plt.text(0.6, 1.15, 'Beta (1,1)', fontsize = 10, color = 'r')
+plt.text(0.3, 2.15, 'Beta (7,3)', fontsize = 10, color = 'g')
+plt.plot(x, beta.pdf(x, a, b), 'r-')
+plt.plot(x, beta.pdf(x1, c, d), 'b-')
+plt.plot(x, beta.pdf(x2, e, f), 'g-')
+plt.title('Beta Distribution', fontsize='15')
+plt.xlabel('p', fontsize='15')
+plt.ylabel('Probability', fontsize='15')
+#plt.show()
+plt.savefig('Beta Priors.png')
