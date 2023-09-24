@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <!-- This site was created with Wowchemy. https://www.wowchemy.com -->
-<!-- Last Published: September 23, 2023 --><html lang="en-us" >
+<!-- Last Published: September 24, 2023 --><html lang="en-us" >
 
 
 <head>
@@ -837,13 +837,13 @@
   <div class="article-container">
 
     <div class="article-style">
-      <h2 id="the-purpose">The purpose</h2>
-<p>In this article we would like to answer how likely it is that the Version B of our e-mail or our website is better then Version A.</p>
+      <h2 id="is-varient-b-better-than-variant-a">Is varient B better than variant A</h2>
+<p>In this post we will perform a hypothesis test where we would like to answer how likely it is that the version B of an  e-mail or our website that is shown to our customers is better then version A. We will do this by using the Beta distribution and a series of random samplings from the distributions with the use of Monte Carlo simulations.</p>
 <h2 id="initial-setup">Initial setup</h2>
-<p>Imagine we would like to test if adding an image or button to our Website or Email and test if it helps or hurts our conversion rate. We decide that the two E-mail variants that we will implement are one with images and one without them. As an assumption we currently have 1000 subscribers on our email. The test site without the image will be shown to 500 subscribers.</p>
+<p>Imagine we would like to add an image or button to our website or e-mail and test if it helps or hurts our conversion rate. In our case we will go with an e-mail test, however, this can easily be applied on a web environment. We decide that the two e-mail variants that we will implement are one with images (variant A) and one without them (variant B). We assume that we currently have 1000 subscribers to our email and the test will be shown to 500 subscribers.</p>
 <h2 id="prior-beliefs">Prior beliefs</h2>
-<p>Now we need to know what our prior will be. &ldquo;The prior&rdquo; tells us how the probability of our belief about the data before taking into account the information contained in the data being analyzed is distributed. In our case we will use the beta distribution for our prior, the beta distribution helps us estimate the probability of an event.</p>
-<p>
+<p>&ldquo;The prior&rdquo; tells us how the probability of our belief (weak inclination towards variant B outperforming variant A) is distributed, before taking into account the information contained in the data being analyzed. In our case we will use the Beta distribution which helps us estimate the probability of an event.
+
 
 
 
@@ -863,9 +863,9 @@
   <div class="d-flex justify-content-center">
     <div class="w-100" ><img src="./Beta_Priors.png" alt="png" loading="lazy" data-zoomable /></div>
   </div></figure>
-</p>
-<p>The Priors can be informative (blue), weekly informative (green), or uninformative (red) depending on how confident we are about the outcome of our event.</p>
-<h2 id="analysing-the-data">Analysing the data</h2>
+
+The Priors can be informative (blue), weekly informative (green), or uninformative (red) depending on how confident we are in our belief.</p>
+<h2 id="analyzing-the-data">Analyzing the data</h2>
 <p>After collecting some data we get the following results, obviously the data will change over time, but we will discuss the automation towards the end of this article.</p>
 <table>
 <thead>
@@ -879,29 +879,29 @@
 <tbody>
 <tr>
 <td style="text-align:left">Variant A</td>
-<td style="text-align:right">36</td>
-<td style="text-align:right">114</td>
+<td style="text-align:right">60</td>
+<td style="text-align:right">190</td>
 <td style="text-align:right">0.24</td>
 </tr>
 <tr>
 <td style="text-align:left">Variant B</td>
-<td style="text-align:right">50</td>
-<td style="text-align:right">100</td>
+<td style="text-align:right">83</td>
+<td style="text-align:right">167</td>
 <td style="text-align:right">0.33</td>
 </tr>
 </tbody>
 </table>
-<p>In order to calculate the posterior distribution we will use the bellow distribution. The parameters of the Beta distribution can be viewed as the number of successful and failed trials $\alpha$ representing the number of successes, and $\beta$ showing the number of failures.</p>
+<p>In order to calculate the posterior distribution we will add our likelihood and prior belief. The parameters of the Beta distribution can be viewed as the number of successful and failed trials where $\alpha$ represents the number of successes and $\beta$ shows the number of failures.</p>
 
 
 
 $$Beta(\alpha_{post.}, \beta_{post.}) = Beta(\alpha_{prior} + \alpha_{likelihood}, \beta_{prior} + \beta_{likelihood})$$
 
-<h3 id="answering-our-questions-in-python">Answering our questions in python</h3>
-<p>In order to get to our results we will need to do a Monte Carlo simulation. In order to do this we will use the NumPy and SciPy library, however before we do that we should recreate the table above in a Pandas DataFrame.</p>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">d = {&#39;Clicked&#39;: [36, 50], &#39;Not_Clicked&#39;: [114, 100]}
+<h3 id="answering-our-questions-using-python">Answering our questions using Python</h3>
+<p>In order to activate our data we will use the NumPy and SciPy library, however before we do that we should recreate the table above in a Pandas DataFrame.</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">d = {&#39;Clicked&#39;: [60, 83], &#39;Not_Clicked&#39;: [190, 167]}
 </span></span><span class="line"><span class="cl">df = pd.DataFrame(data=d)
-</span></span></code></pre></div><p>Once we have the data we can move on to creating generate a few samples with our data. and seeing the results</p>
+</span></span></code></pre></div><p>Once we have the data in the right format we can move on to drawing a few samples from our distribution and seeing the results.</p>
 <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">n_trials = 100000
 </span></span><span class="line"><span class="cl">prior_a = 3
 </span></span><span class="line"><span class="cl">prior_b = 7
@@ -912,9 +912,34 @@ $$Beta(\alpha_{post.}, \beta_{post.}) = Beta(\alpha_{prior} + \alpha_{likelihood
 </span></span><span class="line"><span class="cl">                       prior_b + df.loc[1,&#39;Not_Clicked&#39;]).rvs(n_trials)
 </span></span><span class="line"><span class="cl">
 </span></span><span class="line"><span class="cl">np.sum(a_samples &lt; b_samples)/n_trials
-</span></span></code></pre></div><p>In our case the result returns ~96%, this indicates that variant B will outperform variant A in 96 out of 100 trials.</p>
+</span></span></code></pre></div><p>In our case the result returns ~96%, this indicates that variant B will outperform variant A in 96 out of 100 trials.
+We can also visualize our results in a probability density plot where you can clearly see that the conversion rate of variant B is higher than that of variant B.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<figure  >
+  <div class="d-flex justify-content-center">
+    <div class="w-100" ><img src="./Parameter_estimation.png" alt="png" loading="lazy" data-zoomable /></div>
+  </div></figure>
+</p>
 <h2 id="automation">Automation</h2>
-<p>Automation is always a tricky subject, hence the workflow should be well understood by the engineer working on this&hellip;</p>
+<p>Automation is always a tricky subject, hence the workflow should be well understood by the engineer working on this. Here are some suggestions on how this analysis can be automated.</p>
+<p>Step 1: Create a connection to the your database. This can be done through the use of pyodbc library.</p>
+<p>Step 2: Create a destination and think of a way that the data will be delivered.</p>
+<p>Step 3: Create a batch file that can automatically be triggered by a task scheduler.</p>
 
     </div>
 
