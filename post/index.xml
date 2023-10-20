@@ -5,123 +5,12 @@
     <link>https://rokuc.github.io/post/</link>
       <atom:link href="https://rokuc.github.io/post/index.xml" rel="self" type="application/rss+xml" />
     <description>Posts</description>
-    <generator>Wowchemy (https://wowchemy.com)</generator><language>en-us</language><lastBuildDate>Fri, 22 Sep 2023 00:00:00 +0000</lastBuildDate>
+    <generator>Wowchemy (https://wowchemy.com)</generator><language>en-us</language>
     <image>
       <url>https://rokuc.github.io/media/icon_hub6cbf2e3867c55f0faea7610ce2a8cb5_10290_512x512_fill_lanczos_center_3.png</url>
       <title>Posts</title>
       <link>https://rokuc.github.io/post/</link>
     </image>
-    
-    <item>
-      <title>Bayesian A/B Test</title>
-      <link>https://rokuc.github.io/post/bayesian-ab-test/</link>
-      <pubDate>Fri, 22 Sep 2023 00:00:00 +0000</pubDate>
-      <guid>https://rokuc.github.io/post/bayesian-ab-test/</guid>
-      <description>&lt;h2 id=&#34;is-varient-b-better-than-variant-a&#34;&gt;Is varient B better than variant A&lt;/h2&gt;
-&lt;p&gt;In this post we will perform a hypothesis test where we would like to answer how likely it is that the version B of an  e-mail or our website that is shown to our customers is better then version A. We will do this by using the Beta distribution and a series of random samplings from the distributions with the use of Monte Carlo simulations.&lt;/p&gt;
-&lt;h2 id=&#34;initial-setup&#34;&gt;Initial setup&lt;/h2&gt;
-&lt;p&gt;Imagine we would like to add an image or button to our website or e-mail and test if it helps or hurts our conversion rate. In our case we will go with an e-mail test, however, this can easily be applied on a web environment. We decide that the two e-mail variants that we will implement are one with images (variant A) and one without them (variant B). We assume that we currently have 1000 subscribers to our email and the test will be shown to 500 subscribers.&lt;/p&gt;
-&lt;h2 id=&#34;prior-beliefs&#34;&gt;Prior beliefs&lt;/h2&gt;
-&lt;p&gt;&amp;ldquo;The prior&amp;rdquo; tells us how the probability of our belief (weak inclination towards variant B outperforming variant A) is distributed, before taking into account the information contained in the data being analyzed. In our case we will use the Beta distribution which helps us estimate the probability of an event.
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-&lt;figure  &gt;
-  &lt;div class=&#34;d-flex justify-content-center&#34;&gt;
-    &lt;div class=&#34;w-100&#34; &gt;&lt;img src=&#34;./Beta_Priors.png&#34; alt=&#34;png&#34; loading=&#34;lazy&#34; data-zoomable /&gt;&lt;/div&gt;
-  &lt;/div&gt;&lt;/figure&gt;
-
-The Priors can be informative (blue), weekly informative (green), or uninformative (red) depending on how confident we are in our belief.&lt;/p&gt;
-&lt;h2 id=&#34;analyzing-the-data&#34;&gt;Analyzing the data&lt;/h2&gt;
-&lt;p&gt;After collecting some data we get the following results, obviously the data will change over time, but we will discuss the automation towards the end of this article.&lt;/p&gt;
-&lt;table&gt;
-&lt;thead&gt;
-&lt;tr&gt;
-&lt;th style=&#34;text-align:left&#34;&gt;&lt;/th&gt;
-&lt;th style=&#34;text-align:right&#34;&gt;Clicked&lt;/th&gt;
-&lt;th style=&#34;text-align:right&#34;&gt;Not Clicked&lt;/th&gt;
-&lt;th style=&#34;text-align:right&#34;&gt;Observed conversion rate&lt;/th&gt;
-&lt;/tr&gt;
-&lt;/thead&gt;
-&lt;tbody&gt;
-&lt;tr&gt;
-&lt;td style=&#34;text-align:left&#34;&gt;Variant A&lt;/td&gt;
-&lt;td style=&#34;text-align:right&#34;&gt;60&lt;/td&gt;
-&lt;td style=&#34;text-align:right&#34;&gt;190&lt;/td&gt;
-&lt;td style=&#34;text-align:right&#34;&gt;0.24&lt;/td&gt;
-&lt;/tr&gt;
-&lt;tr&gt;
-&lt;td style=&#34;text-align:left&#34;&gt;Variant B&lt;/td&gt;
-&lt;td style=&#34;text-align:right&#34;&gt;83&lt;/td&gt;
-&lt;td style=&#34;text-align:right&#34;&gt;167&lt;/td&gt;
-&lt;td style=&#34;text-align:right&#34;&gt;0.33&lt;/td&gt;
-&lt;/tr&gt;
-&lt;/tbody&gt;
-&lt;/table&gt;
-&lt;p&gt;In order to calculate the posterior distribution we will add our likelihood and prior belief. The parameters of the Beta distribution can be viewed as the number of successful and failed trials where $\alpha$ represents the number of successes and $\beta$ shows the number of failures.&lt;/p&gt;
-
-
-
-$$Beta(\alpha_{post.}, \beta_{post.}) = Beta(\alpha_{prior} + \alpha_{likelihood}, \beta_{prior} + \beta_{likelihood})$$
-
-&lt;h3 id=&#34;answering-our-questions-using-python&#34;&gt;Answering our questions using Python&lt;/h3&gt;
-&lt;p&gt;In order to activate our data we will use the NumPy and SciPy library, however before we do that we should recreate the table above in a Pandas DataFrame.&lt;/p&gt;
-&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-fallback&#34; data-lang=&#34;fallback&#34;&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;d = {&amp;#39;Clicked&amp;#39;: [60, 83], &amp;#39;Not_Clicked&amp;#39;: [190, 167]}
-&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;df = pd.DataFrame(data=d)
-&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;Once we have the data in the right format we can move on to drawing a few samples from our distribution and seeing the results.&lt;/p&gt;
-&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-fallback&#34; data-lang=&#34;fallback&#34;&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;n_trials = 100000
-&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;prior_a = 3
-&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;prior_b = 7
-&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;
-&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;a_samples = stats.beta(prior_a + df.loc[0,&amp;#39;Clicked&amp;#39;],
-&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;                       prior_b + df.loc[0,&amp;#39;Not_Clicked&amp;#39;]).rvs(n_trials)
-&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;b_samples = stats.beta(prior_a + df.loc[1,&amp;#39;Clicked&amp;#39;],
-&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;                       prior_b + df.loc[1,&amp;#39;Not_Clicked&amp;#39;]).rvs(n_trials)
-&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;
-&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;np.sum(a_samples &amp;lt; b_samples)/n_trials
-&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;In our case the result returns ~96%, this indicates that variant B will outperform variant A in 96 out of 100 trials.
-We can also visualize our results in a probability density plot where you can clearly see that the conversion rate of variant B is higher than that of variant B.
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-&lt;figure  &gt;
-  &lt;div class=&#34;d-flex justify-content-center&#34;&gt;
-    &lt;div class=&#34;w-100&#34; &gt;&lt;img src=&#34;./Parameter_estimation.png&#34; alt=&#34;png&#34; loading=&#34;lazy&#34; data-zoomable /&gt;&lt;/div&gt;
-  &lt;/div&gt;&lt;/figure&gt;
-&lt;/p&gt;
-&lt;h2 id=&#34;automation&#34;&gt;Automation&lt;/h2&gt;
-&lt;p&gt;Automation is always a tricky subject, hence the workflow should be well understood by the engineer working on this. Here are some suggestions on how this analysis can be automated.&lt;/p&gt;
-&lt;p&gt;Step 1: Create a connection to the your database. This can be done through the use of pyodbc library.&lt;/p&gt;
-&lt;p&gt;Step 2: Create a destination and think of a way that the data will be delivered.&lt;/p&gt;
-&lt;p&gt;Step 3: Create a batch file that can automatically be triggered by a task scheduler.&lt;/p&gt;
-</description>
-    </item>
     
   </channel>
 </rss>
