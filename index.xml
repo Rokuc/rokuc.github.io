@@ -18,6 +18,14 @@
       <pubDate>Thu, 20 Oct 2022 00:00:00 +0000</pubDate>
       <guid>https://rokuc.github.io/project/crawler/</guid>
       <description>&lt;h2 id=&#34;project-overview&#34;&gt;Project overview&lt;/h2&gt;
+&lt;p&gt;In this project we will be using selenium base to connect to a web page and collect some interesting data about real estate in Slovenia and connect that to geospatial data. We will conclude with a Demo visualization&lt;/p&gt;
+&lt;p&gt;We will touch upon four main topics:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;Creating a crawler using python,&lt;/li&gt;
+&lt;li&gt;Mapping the data to Google BigQuery project and Postgresql as an alternative way of storring data,&lt;/li&gt;
+&lt;li&gt;Preparing a basic visualization in LookerStudio.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;In a future article we will discuss the visualization of this data in a Django web Application using a Mapbox GLJS setup to plot the geospatial data..&lt;/p&gt;
 &lt;p&gt;
 
 
@@ -36,9 +44,77 @@
 
 &lt;figure  &gt;
   &lt;div class=&#34;d-flex justify-content-center&#34;&gt;
-    &lt;div class=&#34;w-100&#34; &gt;&lt;img src=&#34;./Schema.png&#34; alt=&#34;png&#34; loading=&#34;lazy&#34; data-zoomable /&gt;&lt;/div&gt;
+    &lt;div class=&#34;w-100&#34; &gt;&lt;img alt=&#34;Image of schema&#34; srcset=&#34;
+               /project/crawler/Schema_hu9745234ef0209b4f995aeda01714f7c0_44532_d5a9307366ace7e83d2dc52a56877ab9.webp 400w,
+               /project/crawler/Schema_hu9745234ef0209b4f995aeda01714f7c0_44532_cc871c3375022cf9fb1dd26d64e43be6.webp 760w,
+               /project/crawler/Schema_hu9745234ef0209b4f995aeda01714f7c0_44532_1200x1200_fit_q75_h2_lanczos_3.webp 1200w&#34;
+               src=&#34;https://rokuc.github.io/project/crawler/Schema_hu9745234ef0209b4f995aeda01714f7c0_44532_d5a9307366ace7e83d2dc52a56877ab9.webp&#34;
+               width=&#34;760&#34;
+               height=&#34;428&#34;
+               loading=&#34;lazy&#34; data-zoomable /&gt;&lt;/div&gt;
   &lt;/div&gt;&lt;/figure&gt;
 &lt;/p&gt;
+&lt;p&gt;Disclaimer: The crawler discussed in this article is not created and should not be used for commercial purposes. It only serves the demonstrative purpose of this article.&lt;/p&gt;
+&lt;h2 id=&#34;delving-into-selenium&#34;&gt;Delving into Selenium&lt;/h2&gt;
+&lt;p&gt;The packages we will be using are listed bellow.&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-fallback&#34; data-lang=&#34;fallback&#34;&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;import time
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;from seleniumbase import Driver
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;from selenium.webdriver.common.by import By
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;import pandas as pd
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;We will further explore some basic functions that we will be using during our entire project.&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-fallback&#34; data-lang=&#34;fallback&#34;&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;def find_element_by_attr(browser, tag, attr, value,multiple):
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;    xpath = f&amp;#34;//{tag}[@{attr}=&amp;#39;{value}&amp;#39;]&amp;#34;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;    if(multiple==True):
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;        return browser.find_elements(By.XPATH,xpath)
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;    else:
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;        return browser.find_element(By.XPATH,xpath)
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;def find_element_by_innertext(browser, tag, innertext,multiple):
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;    xpath = f&amp;#34;//{tag}[contains(text(),&amp;#39;{innertext}&amp;#39;)]&amp;#34;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;    if(multiple==True):
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;        return browser.find_elements(By.XPATH,xpath)
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;    else:
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;        return browser.find_element(By.XPATH,xpath)
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;def find_element_by_regex(browser, tag, attr, x_regx,multiple):
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;    xpath = f&amp;#34;//{tag}[contains(@{attr},&amp;#39;{x_regx}&amp;#39;)]&amp;#34;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;    if(multiple==True):
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;        return browser.find_elements(By.XPATH,xpath)
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;    else:
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;        return browser.find_element(By.XPATH,xpath)
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;def look_for_child_by_attribute(list_of_children, attr_lookup, wanted_attr):
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;    child = &amp;#39;&amp;#39;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;    i = 0
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;    while child != wanted_attr:
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;        child = list_of_children[i].get_attribute(attr_lookup)
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;        i=i+1
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;    element = list_of_children[i]
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;    return element
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;Let&amp;rsquo;s take the example bellow with a as the element of the html document:&lt;/p&gt;
+&lt;p&gt;&amp;lt;a href=&amp;ldquo;rokuc.github.io&amp;rdquo;&amp;gt;My page&amp;lt;/a&amp;gt;&lt;/p&gt;
+&lt;p&gt;&lt;em&gt;href&lt;/em&gt; is an attribute of element &lt;em&gt;a&lt;/em&gt; and the value of href is &lt;em&gt;&amp;ldquo;rokuc.github.io&amp;rdquo;&lt;/em&gt;. The inner text of this ellement is &lt;em&gt;&amp;ldquo;My page&amp;rdquo;&lt;/em&gt;.&lt;/p&gt;
+&lt;p&gt;The &lt;em&gt;find_element_by_&lt;/em&gt; functions serve as facilitators to simplify the search of web elements and make the code more readable. The &lt;em&gt;look_for_child_by_&lt;/em&gt; code further helps loop through children of a parent element based on the childs attributes.&lt;/p&gt;
+&lt;p&gt;Let&amp;rsquo;s fireup selenium with the following code.&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-fallback&#34; data-lang=&#34;fallback&#34;&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;browser = Driver(uc=True)
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;the uc (undetected-chromedriver) argument is a neat feture which evades bot-detection. This allows us to by pass  cloudflare for example.&lt;/p&gt;
+&lt;p&gt;If you are ever looking to buy property in Slovenia, we will now start access the largest realestate portal in Slovenia.&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-fallback&#34; data-lang=&#34;fallback&#34;&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;def go_to_webpage(browser, webpage):
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;    browser.get(webpage)
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;    return browser
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;def accept_cookies(browser):
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;    find_element_by_innertext(browser, &amp;#39;button&amp;#39;, &amp;#39;Dovoli vse &amp;#39;,multiple=False).click()      
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;    return browser
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;def start_browsing(browser):
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;    find_element_by_innertext(browser, &amp;#39;span&amp;#39;, &amp;#39;rezultate&amp;#39;,multiple=False).find_element(By.XPATH,&amp;#39;..&amp;#39;).click()
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;    return browser
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;browser = go_to_webpage(browser, &amp;#39;https://www.nepremicnine.net/&amp;#39;)
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;browser = accept_cookies(browser)
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;start_browsing(browser)
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;The sequence of functions above let&amp;rsquo;s us start searching the portal. We first accept all cookies and then move on to the page that includes all the listings by clicking the button that contains the following text &amp;ldquo;rezultate&amp;rdquo; (it&amp;rsquo;s it the &amp;ldquo;show results&amp;rdquo; button in Slovenian &amp;ldquo;Prikaži Rezultate&amp;rdquo;).&lt;/p&gt;
 </description>
     </item>
     

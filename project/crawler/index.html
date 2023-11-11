@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <!-- This site was created with Wowchemy. https://www.wowchemy.com -->
-<!-- Last Published: October 20, 2023 --><html lang="en-us" >
+<!-- Last Published: November 11, 2023 --><html lang="en-us" >
 
 
 <head>
@@ -819,6 +819,14 @@
 
     <div class="article-style">
       <h2 id="project-overview">Project overview</h2>
+<p>In this project we will be using selenium base to connect to a web page and collect some interesting data about real estate in Slovenia and connect that to geospatial data. We will conclude with a Demo visualization</p>
+<p>We will touch upon four main topics:</p>
+<ul>
+<li>Creating a crawler using python,</li>
+<li>Mapping the data to Google BigQuery project and Postgresql as an alternative way of storring data,</li>
+<li>Preparing a basic visualization in LookerStudio.</li>
+</ul>
+<p>In a future article we will discuss the visualization of this data in a Django web Application using a Mapbox GLJS setup to plot the geospatial data..</p>
 <p>
 
 
@@ -837,9 +845,77 @@
 
 <figure  >
   <div class="d-flex justify-content-center">
-    <div class="w-100" ><img src="./Schema.png" alt="png" loading="lazy" data-zoomable /></div>
+    <div class="w-100" ><img alt="Image of schema" srcset="
+               /project/crawler/Schema_hu9745234ef0209b4f995aeda01714f7c0_44532_d5a9307366ace7e83d2dc52a56877ab9.webp 400w,
+               /project/crawler/Schema_hu9745234ef0209b4f995aeda01714f7c0_44532_cc871c3375022cf9fb1dd26d64e43be6.webp 760w,
+               /project/crawler/Schema_hu9745234ef0209b4f995aeda01714f7c0_44532_1200x1200_fit_q75_h2_lanczos_3.webp 1200w"
+               src="/project/crawler/Schema_hu9745234ef0209b4f995aeda01714f7c0_44532_d5a9307366ace7e83d2dc52a56877ab9.webp"
+               width="760"
+               height="428"
+               loading="lazy" data-zoomable /></div>
   </div></figure>
 </p>
+<p>Disclaimer: The crawler discussed in this article is not created and should not be used for commercial purposes. It only serves the demonstrative purpose of this article.</p>
+<h2 id="delving-into-selenium">Delving into Selenium</h2>
+<p>The packages we will be using are listed bellow.</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">import time
+</span></span><span class="line"><span class="cl">from seleniumbase import Driver
+</span></span><span class="line"><span class="cl">from selenium.webdriver.common.by import By
+</span></span><span class="line"><span class="cl">import pandas as pd
+</span></span></code></pre></div><p>We will further explore some basic functions that we will be using during our entire project.</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">def find_element_by_attr(browser, tag, attr, value,multiple):
+</span></span><span class="line"><span class="cl">    xpath = f&#34;//{tag}[@{attr}=&#39;{value}&#39;]&#34;
+</span></span><span class="line"><span class="cl">    if(multiple==True):
+</span></span><span class="line"><span class="cl">        return browser.find_elements(By.XPATH,xpath)
+</span></span><span class="line"><span class="cl">    else:
+</span></span><span class="line"><span class="cl">        return browser.find_element(By.XPATH,xpath)
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">def find_element_by_innertext(browser, tag, innertext,multiple):
+</span></span><span class="line"><span class="cl">    xpath = f&#34;//{tag}[contains(text(),&#39;{innertext}&#39;)]&#34;
+</span></span><span class="line"><span class="cl">    if(multiple==True):
+</span></span><span class="line"><span class="cl">        return browser.find_elements(By.XPATH,xpath)
+</span></span><span class="line"><span class="cl">    else:
+</span></span><span class="line"><span class="cl">        return browser.find_element(By.XPATH,xpath)
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">def find_element_by_regex(browser, tag, attr, x_regx,multiple):
+</span></span><span class="line"><span class="cl">    xpath = f&#34;//{tag}[contains(@{attr},&#39;{x_regx}&#39;)]&#34;
+</span></span><span class="line"><span class="cl">    if(multiple==True):
+</span></span><span class="line"><span class="cl">        return browser.find_elements(By.XPATH,xpath)
+</span></span><span class="line"><span class="cl">    else:
+</span></span><span class="line"><span class="cl">        return browser.find_element(By.XPATH,xpath)
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">def look_for_child_by_attribute(list_of_children, attr_lookup, wanted_attr):
+</span></span><span class="line"><span class="cl">    child = &#39;&#39;
+</span></span><span class="line"><span class="cl">    i = 0
+</span></span><span class="line"><span class="cl">    while child != wanted_attr:
+</span></span><span class="line"><span class="cl">        child = list_of_children[i].get_attribute(attr_lookup)
+</span></span><span class="line"><span class="cl">        i=i+1
+</span></span><span class="line"><span class="cl">    element = list_of_children[i]
+</span></span><span class="line"><span class="cl">    return element
+</span></span></code></pre></div><p>Let&rsquo;s take the example bellow with a as the element of the html document:</p>
+<p>&lt;a href=&ldquo;rokuc.github.io&rdquo;&gt;My page&lt;/a&gt;</p>
+<p><em>href</em> is an attribute of element <em>a</em> and the value of href is <em>&ldquo;rokuc.github.io&rdquo;</em>. The inner text of this ellement is <em>&ldquo;My page&rdquo;</em>.</p>
+<p>The <em>find_element_by_</em> functions serve as facilitators to simplify the search of web elements and make the code more readable. The <em>look_for_child_by_</em> code further helps loop through children of a parent element based on the childs attributes.</p>
+<p>Let&rsquo;s fireup selenium with the following code.</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">browser = Driver(uc=True)
+</span></span></code></pre></div><p>the uc (undetected-chromedriver) argument is a neat feture which evades bot-detection. This allows us to by pass  cloudflare for example.</p>
+<p>If you are ever looking to buy property in Slovenia, we will now start access the largest realestate portal in Slovenia.</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">def go_to_webpage(browser, webpage):
+</span></span><span class="line"><span class="cl">    browser.get(webpage)
+</span></span><span class="line"><span class="cl">    return browser
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">def accept_cookies(browser):
+</span></span><span class="line"><span class="cl">    find_element_by_innertext(browser, &#39;button&#39;, &#39;Dovoli vse &#39;,multiple=False).click()      
+</span></span><span class="line"><span class="cl">    return browser
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">def start_browsing(browser):
+</span></span><span class="line"><span class="cl">    find_element_by_innertext(browser, &#39;span&#39;, &#39;rezultate&#39;,multiple=False).find_element(By.XPATH,&#39;..&#39;).click()
+</span></span><span class="line"><span class="cl">    return browser
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">browser = go_to_webpage(browser, &#39;https://www.nepremicnine.net/&#39;)
+</span></span><span class="line"><span class="cl">browser = accept_cookies(browser)
+</span></span><span class="line"><span class="cl">start_browsing(browser)
+</span></span></code></pre></div><p>The sequence of functions above let&rsquo;s us start searching the portal. We first accept all cookies and then move on to the page that includes all the listings by clicking the button that contains the following text &ldquo;rezultate&rdquo; (it&rsquo;s it the &ldquo;show results&rdquo; button in Slovenian &ldquo;Prikaži Rezultate&rdquo;).</p>
 
     </div>
 
